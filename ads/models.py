@@ -8,23 +8,24 @@ POSITION = (
 
 class Category(models.Model):
     # Категории новостей/статей — темы, которые они отражают (спорт, политика, образование и т. д.).
-    name = models.CharField(max_length=255, choices=POSITION)  # название категории. Поле должно быть уникальным
+    name = models.CharField(max_length=255, choices=POSITION)
     #subscribers = models.ManyToManyField(User)
+    slug = models.SlugField('url')
 
 class Post(models.Model):
     # Эта модель должна содержать в себе статьи и новости, которые создают пользователи.
     # Каждый объект может иметь одну или несколько категорий.
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)  # связь «один ко многим» с моделью Author;
-    time_in = models.DateTimeField(auto_now_add=True)  # автоматически добавляемая дата и время создания;
-    category = models.ManyToManyField(Category, through='PostCategory')
-    article = models.CharField(max_length=255)  # заголовок статьи/новости;
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    category = models.ManyToManyField(Category, through='PostCategory') #models.ForeignKey
+    article = models.CharField(max_length=255)
     post_text = HTMLField()
 
 
 class PostCategory(models.Model):
     # Промежуточная модель для связи «многие ко многим»:
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)  # связь «один ко многим» с моделью Post;
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)  # связь «один ко многим» с моделью Category.
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
 class Comment(models.Model):
