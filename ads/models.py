@@ -1,39 +1,48 @@
+from django.contrib.auth.models import User
 from django.db import models
 from tinymce.models import HTMLField
 
 POSITION = (
-    ('PO', 'Article'),
-    ('NE', 'News')
+    ('TA', 'Tank'),
+    ('HE', 'Heal'),
+    ('DD', 'DamageDealer'),
+    ('ME', 'Merchant'),
+    ('GM', 'GuildMaster'),
+    ('QG', 'QuestGiver'),
+    ('BS', 'BlackSmith'),
+    ('SK', 'Skinner'),
+    ('PM', 'PotionMaster'),
+    ('SM', 'SpellMaster'),
 )
 
+
 class Category(models.Model):
-    # Категории новостей/статей — темы, которые они отражают (спорт, политика, образование и т. д.).
     name = models.CharField(max_length=255, choices=POSITION)
-    #subscribers = models.ManyToManyField(User)
     slug = models.SlugField('url')
 
+    def __str__(self):
+        return self.name
+
+
 class Post(models.Model):
-    # Эта модель должна содержать в себе статьи и новости, которые создают пользователи.
-    # Каждый объект может иметь одну или несколько категорий.
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
-    category = models.ManyToManyField(Category, through='PostCategory') #models.ForeignKey
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     article = models.CharField(max_length=255)
     post_text = HTMLField()
 
+    def __str__(self):
+        return self.article
 
-class PostCategory(models.Model):
-    # Промежуточная модель для связи «многие ко многим»:
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+# class PostCategory(models.Model):
+#     # Промежуточная модель для связи «многие ко многим»:
+#     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+#     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
 class Comment(models.Model):
-    # Под каждой новостью/статьёй можно оставлять комментарии, поэтому необходимо организовать их способ хранения тоже.
-
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-# (комментарии может оставить любой пользователь, необязательно автор);
     text = models.CharField(max_length=255)
     time_in = models.DateTimeField(auto_now_add=True)
-
