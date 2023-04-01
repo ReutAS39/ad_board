@@ -1,0 +1,7 @@
+{% extends 'default.html' %}
+
+{% block content %}
+    {% for a in ads %}
+<h1>{{ a.created }}</h1>
+    {% endfor %}
+{% endblock content %}
