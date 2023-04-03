@@ -2,13 +2,16 @@
 
 {% block content %}
 <ul class="list-articles">
-	{% for a in ads %}
-			<li><h2>{{a.article}}</h2>
+	{% for p in posts %}
+			<li><div class="article-panel">
+				<p class="first">Категория: {{p.category}}</p>
+				<p class="last">Дата: {{p.created|date:"d-m-Y H:i:s" }}</p>
+			<li><h2>{{p.article}}</h2>
 	{% autoescape on %}
-	{{a.post_text|linebreaks|truncatewords:50}}
+	{{p.post_text|linebreaks|truncatewords:50}}
 	{% endautoescape %}
 			<div class="clear"></div>
-			<p class="link-read-post"><a href="#">Читать пост</a></p>
+			<p class="link-read-post"><a href="{{ p.get_absolute_url }}">Читать пост</a></p>
 			</li>
 	{% endfor %}
 </ul>

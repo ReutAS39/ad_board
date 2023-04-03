@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+</ul>
+
+<h3>{{ post.article }}</h3>
+<h4>{{ post.created|date:'d M Y' }}</h4>
+<p>{{ post.text }}</p>
+
+{% endblock content %}

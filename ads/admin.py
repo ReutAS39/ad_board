@@ -9,6 +9,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'created', 'article', 'category')
+    prepopulated_fields = {"slug": ("article",)}
 
 
 

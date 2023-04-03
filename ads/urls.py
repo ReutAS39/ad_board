@@ -1,10 +1,11 @@
 from django.urls import path, include
-from .views import AdsList, AdsCreate, AdsDetail, AdsUpdate, AdsDelete
+from .views import PostList, PostDetail, PostCreate, PostUpdate, PostDelete
 
 urlpatterns = [
-    path('', AdsList.as_view(), name='ads_list'),
-    path('<int:pk>', (AdsDetail.as_view()), name='ads'),
-    path('create/', AdsCreate.as_view(), name='ads_create'),
-    path('<int:pk>/edit', AdsUpdate.as_view(), name='ads_edit'),
-    path('<int:pk>/delete', AdsDelete.as_view(), name='ads_delete'),
+    path('', PostList.as_view(), name='post_list'),
+    path('post/<slug:post_slug>>', PostDetail.as_view(), name='post'),
+    path('create/', PostCreate.as_view(), name='post_create'),
+    path('<int:pk>/edit', PostUpdate.as_view(), name='post_edit'),
+    path('<int:pk>/delete', PostDelete.as_view(), name='post_delete'),
+    path('category/<slug:cat_slug>/', PostList.as_view(), name='category'),
 ]

@@ -1,31 +1,36 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 from tinymce.models import HTMLField
 
 POSITION = (
-    ('TA', 'Tank'),
-    ('HE', 'Heal'),
-    ('DD', 'DamageDealer'),
-    ('ME', 'Merchant'),
-    ('GM', 'GuildMaster'),
-    ('QG', 'QuestGiver'),
-    ('BS', 'BlackSmith'),
-    ('SK', 'Skinner'),
-    ('PM', 'PotionMaster'),
-    ('SM', 'SpellMaster'),
+    ('Tank', 'Tank'),
+    ('Healer', 'Heal'),
+    ('DamageDealer', 'DamageDealer'),
+    ('Merchant', 'Merchant'),
+    ('Guildmaster', 'GuildMaster'),
+    ('QuestGiver', 'QuestGiver'),
+    ('Blacksmith', 'BlackSmith'),
+    ('Skinner', 'Skinner'),
+    ('PotionMaster', 'PotionMaster'),
+    ('SpellMaster', 'SpellMaster'),
 )
 
 
 class Category(models.Model):
     name = models.CharField(max_length=255, choices=POSITION)
-    slug = models.SlugField('url')
+    slug = models.SlugField(max_length=255, unique=True, verbose_name="URL")
 
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'cat_slug': self.slug})
+
 
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    slug = models.SlugField(max_length=255, unique=True, verbose_name="URL")
     created = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     article = models.CharField(max_length=255)
@@ -33,6 +38,9 @@ class Post(models.Model):
 
     def __str__(self):
         return self.article
+
+    def get_absolute_url(self):
+        return reverse('post', kwargs={'post_slug': self.slug})
 
 
 # class PostCategory(models.Model):
