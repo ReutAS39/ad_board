@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import resolve, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -12,7 +12,6 @@ class PostList(DataMixin, ListView):
     ordering = '-created'
     template_name = 'index.html'
     context_object_name = 'posts'
-    # paginate_by = 10
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -36,7 +35,8 @@ class CategoryList(DataMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title='Категория - ' + str(context['posts'][0].category), cat_selected=context['posts'][0].category_id)
+        c_def = self.get_user_context(title='Категория - ' + str(context['posts'][0].category),
+                                      cat_selected=context['posts'][0].category_id)
         return dict(list(context.items()) + list(c_def.items()))
 
 
@@ -52,10 +52,12 @@ class PostDetail(DataMixin, DetailView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
-class PostCreate(DataMixin, CreateView):
+class PostCreate(LoginRequiredMixin, DataMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
+    # login_url = reverse_lazy('post_list')
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -88,6 +90,3 @@ class PostDelete(DeleteView):
         context['title'] = f"Удаление статьи {context['post'].article}"
         return context
 
-
-def login(request):
-    return HttpResponse("Авторизация")
