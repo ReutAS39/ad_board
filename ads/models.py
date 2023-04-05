@@ -34,7 +34,7 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     article = models.CharField(max_length=255)
-    post_text = HTMLField()
+    post_text = HTMLField(blank=True, default="")
 
     def __str__(self):
         return self.article

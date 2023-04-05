@@ -6,12 +6,12 @@
 			<li><div class="article-panel">
 				<p class="first">Категория: {{p.category}}</p>
 				<p class="last">Дата: {{p.created|date:"d-m-Y H:i:s" }}</p>
-			<li><h2>{{p.article}}</h2>
+			<li><h2> <a href="{{ p.get_absolute_url }}">{{ p.article }}</a></h2>
 	{% autoescape on %}
 	{{p.post_text|linebreaks|truncatewords:50}}
 	{% endautoescape %}
 			<div class="clear"></div>
-			<p class="link-read-post"><a href="{{ p.get_absolute_url }}">Читать пост</a></p>
+			<p class="link-read-post"><a href="#">Коментарии</a></p>
 			</li>
 	{% endfor %}
 </ul>

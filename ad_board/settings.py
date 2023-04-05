@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SITE_ID = 1
 
 # Application definition
 
@@ -124,6 +125,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
+MEDIA_ROOT = os.path.join(BASE_DIR, '../ad_board/media')
+MEDIA_URL = '/media/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -137,7 +140,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'  # адрес сервера Яндекс-почты для всех один и тот же
 EMAIL_PORT = 465  # порт smtp сервера тоже одинаковый
 EMAIL_HOST_USER = 'CamcoHKappacko'  # всё то что идёт до собаки
-EMAIL_HOST_PASSWORD = ''  # пароль от почты
+EMAIL_HOST_PASSWORD = '*'  # пароль от почты
 EMAIL_USE_SSL = True
 
 PASSWORD_RESET_TIMEOUT = 3600

@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from ads.models import Post, POSITION, Category
+from ads.models import Post, Comment
 from tinymce.widgets import TinyMCE
 
 class PostForm(forms.ModelForm):
@@ -27,3 +27,12 @@ class PostForm(forms.ModelForm):
             raise ValidationError("Текст не может быть менее 20 символов.")
 
         return post_text
+
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = [
+           'user',
+           'text',
+        ]
