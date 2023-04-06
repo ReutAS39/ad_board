@@ -2,6 +2,8 @@ import os
 from uuid import uuid4
 
 from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect
@@ -63,9 +65,13 @@ class PostDetail(DataMixin, DetailView, FormMixin):
         c_def = self.get_user_context(title=f"{context['post'].article}")
         return dict(list(context.items()) + list(c_def.items()))
 
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('post', kwargs={'post_slug':self.get_object().slug})
+
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         if form.is_valid():
+            messages.success(request, 'Комментарий добавлен.')
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
@@ -98,6 +104,20 @@ class PostCreate(LoginRequiredMixin, DataMixin, CreateView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title='Добавление статьи')
         return dict(list(context.items()) + list(c_def.items()))
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            messages.success(request, 'Статья добавлена.')
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        self.object.save()
+        return super().form_valid(form)
 
 
 class PostUpdate(LoginRequiredMixin, UpdateView):

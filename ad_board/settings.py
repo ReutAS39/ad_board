@@ -39,8 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
-    'ads',
+    'ads.apps.AdsConfig',
     'tinymce',
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
@@ -140,12 +141,15 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'  # адрес сервера Яндекс-почты для всех один и тот же
 EMAIL_PORT = 465  # порт smtp сервера тоже одинаковый
 EMAIL_HOST_USER = 'CamcoHKappacko'  # всё то что идёт до собаки
-EMAIL_HOST_PASSWORD = '*'  # пароль от почты
+EMAIL_HOST_PASSWORD = '**'  # пароль от почты
 EMAIL_USE_SSL = True
 
 PASSWORD_RESET_TIMEOUT = 3600
 
 DEFAULT_FROM_EMAIL = 'CamcoHKappacko@yandex.ru'
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880 # 5MB
 

@@ -11,9 +11,20 @@
 
 
 
-<p>Комментарии</p>
+<p>Комментарии: {{ post.comments_post.all.count }}</p>
 <hr>
 <p>Добавить комментарий</p>
+
+<ul>
+{% for c in post.comments_post.all %}
+
+<li>
+{{ c.time_in }}<br>
+    {{ c.text }}
+</li>
+
+{% endfor %}
+</ul>
 
 <form action="#" method="post" enctype="multipart/form-data">
     {% csrf_token %}

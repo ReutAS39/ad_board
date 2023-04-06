@@ -15,7 +15,6 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = [
-           'user',
            'category',
            'article',
            'post_text',
@@ -35,6 +34,5 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = [
-           'user',
            'text',
         ]
