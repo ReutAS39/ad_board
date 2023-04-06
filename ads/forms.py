@@ -1,5 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.forms import Textarea
 
 from ads.models import Post, Comment
 from tinymce.widgets import TinyMCE
@@ -29,6 +30,7 @@ class PostForm(forms.ModelForm):
         return post_text
 
 class CommentForm(forms.ModelForm):
+    text = forms.CharField(max_length=255, label='Текст', widget=Textarea(attrs={"cols": 80, "rows": 10}))
 
     class Meta:
         model = Comment

@@ -43,12 +43,6 @@ class Post(models.Model):
         return reverse('post', kwargs={'post_slug': self.slug})
 
 
-# class PostCategory(models.Model):
-#     # Промежуточная модель для связи «многие ко многим»:
-#     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-#     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
-
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

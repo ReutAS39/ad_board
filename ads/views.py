@@ -3,12 +3,13 @@ from uuid import uuid4
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect
 from django.urls import resolve, reverse_lazy
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic.edit import FormMixin
 
 from ads.decorators import user_is_superuser
 from ads.forms import PostForm, CommentForm
@@ -49,17 +50,42 @@ class CategoryList(DataMixin, ListView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
-class PostDetail(DataMixin, DetailView):
+class PostDetail(DataMixin, DetailView, FormMixin):
     model = Post
     template_name = 'post.html'
     slug_url_kwarg = 'post_slug'
     context_object_name = 'post'
+
+    form_class = CommentForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title=f"{context['post'].article}")
         return dict(list(context.items()) + list(c_def.items()))
 
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.post = self.get_object()
+        self.object.user = self.request.user
+        self.object.save()
+        return super().form_valid(form)
+
+    #         form = CommentForm(request.POST)
+    #         print(user)
+    #         if form.is_valid():
+    #             form.save(commit=False)
+    #             form.post_id = pk
+    #             form.user_id = user
+    #             form.save()
+    #
+    #         return redirect('post_list')
 
 class PostCreate(LoginRequiredMixin, DataMixin, CreateView):
     form_class = PostForm
@@ -74,7 +100,7 @@ class PostCreate(LoginRequiredMixin, DataMixin, CreateView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
-class PostUpdate(UpdateView):
+class PostUpdate(LoginRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
@@ -87,7 +113,7 @@ class PostUpdate(UpdateView):
         return context
 
 
-class PostDelete(DeleteView):
+class PostDelete(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'post_delete.html'
     slug_url_kwarg = 'post_slug'
@@ -100,17 +126,17 @@ class PostDelete(DeleteView):
         return context
 
 
-class AddComment(View):
-    def post(self, request, pk):
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            form.save(commit=False)
-            form.post_id = pk
-            form.user_id = 20
-            form.save()
-
-        return redirect('post_list')
-
+# class AddComment(View):
+#     def post(self, request, pk):
+#         form = CommentForm(request.POST)
+#         print(user)
+#         if form.is_valid():
+#             form.save(commit=False)
+#             form.post_id = pk
+#             form.user_id = user
+#             form.save()
+#
+#         return redirect('post_list')
 
 
 def upload_image(request, category, post):
