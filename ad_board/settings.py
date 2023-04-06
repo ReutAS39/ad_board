@@ -26,6 +26,7 @@ SECRET_KEY = 'django-insecure-wt8cmi(mct^-@!1!co4)4=p8l#ah217t^mfu917&^kf(dlgx8q
 DEBUG = True
 
 ALLOWED_HOSTS = []
+SITE_URL = 'http://127.0.0.1:8000'
 
 SITE_ID = 1
 
@@ -138,10 +139,10 @@ LOGOUT_REDIRECT_URL = '/'
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.yandex.ru'  # адрес сервера Яндекс-почты для всех один и тот же
-EMAIL_PORT = 465  # порт smtp сервера тоже одинаковый
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
 EMAIL_HOST_USER = 'CamcoHKappacko'  # всё то что идёт до собаки
-EMAIL_HOST_PASSWORD = '**'  # пароль от почты
+EMAIL_HOST_PASSWORD = '***'
 EMAIL_USE_SSL = True
 
 PASSWORD_RESET_TIMEOUT = 3600

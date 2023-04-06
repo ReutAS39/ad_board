@@ -13,22 +13,21 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 from ads.models import *
-from users.models import *
+from django.contrib.auth.models import User
+
 
 logger = logging.getLogger(__name__)
 
 
-# наша задача по выводу текста на экран
+
 def my_job():
     #  Your job processing logic here...
     print('hello from job')
+
     today = datetime.datetime.now()
     last_week = today - datetime.timedelta(days=7)
     posts = Post.objects.filter(created__gte=last_week)
-    # categories = set(posts.values_list('category__name', flat=True))
-    # subscribers = set(Category.objects.filter(name__in=categories).values_list('subscribers__email', flat=True))
-
-    users = set(User.objects.all().email)
+    users = set(User.objects.values_list('email', flat=True))
 
     html_content = render_to_string(
         'daily_post.html',
@@ -45,7 +44,6 @@ def my_job():
     )
     msg.attach_alternative(html_content, 'text/html')
     msg.send()
-    print(posts)
 
 def delete_old_job_executions(max_age=604_800):
     """This job deletes all apscheduler job executions older than `max_age` from the database."""
@@ -61,7 +59,7 @@ class Command(BaseCommand):
 
         scheduler.add_job(
             my_job,
-            trigger=CronTrigger(second="*/20"),
+            trigger=CronTrigger(day_of_week="mon", hour="00", minute="00"),
 
             id="my_job",
             max_instances=1,
