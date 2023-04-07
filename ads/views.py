@@ -5,17 +5,15 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import resolve, reverse_lazy
-from django.views import View
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views.generic.edit import FormMixin
 
-from ads.decorators import user_is_superuser
+from ads.filters import CommentFilter
 from ads.forms import PostForm, CommentForm
-from ads.models import Post
 from ads.utils import *
 
 
@@ -52,6 +50,26 @@ class CategoryList(DataMixin, ListView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
+class UserPage(LoginRequiredMixin, ListView):
+    model = Comment
+    template_name = 'user_page.html'
+    context_object_name = 'comments'
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.filterset = CommentFilter(self.request.GET, queryset)
+        # Возвращаем из функции отфильтрованный список товаров
+        return self.filterset.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = menu
+        context['title'] = 'Страница пользователя'
+        context['filterset'] = self.filterset
+        return context
+
+
 class PostDetail(DataMixin, DetailView, FormMixin):
     model = Post
     template_name = 'post.html'
@@ -66,7 +84,7 @@ class PostDetail(DataMixin, DetailView, FormMixin):
         return dict(list(context.items()) + list(c_def.items()))
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('post', kwargs={'post_slug':self.get_object().slug})
+        return reverse_lazy('post', kwargs={'post_slug': self.get_object().slug})
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -83,15 +101,6 @@ class PostDetail(DataMixin, DetailView, FormMixin):
         self.object.save()
         return super().form_valid(form)
 
-    #         form = CommentForm(request.POST)
-    #         print(user)
-    #         if form.is_valid():
-    #             form.save(commit=False)
-    #             form.post_id = pk
-    #             form.user_id = user
-    #             form.save()
-    #
-    #         return redirect('post_list')
 
 class PostCreate(LoginRequiredMixin, DataMixin, CreateView):
     form_class = PostForm
@@ -146,19 +155,7 @@ class PostDelete(LoginRequiredMixin, DeleteView):
         return context
 
 
-# class AddComment(View):
-#     def post(self, request, pk):
-#         form = CommentForm(request.POST)
-#         print(user)
-#         if form.is_valid():
-#             form.save(commit=False)
-#             form.post_id = pk
-#             form.user_id = user
-#             form.save()
-#
-#         return redirect('post_list')
-
-
+@csrf_exempt
 def upload_image(request, category, post):
     if request.method != 'POST':
         return JsonResponse({"Error Message": "Wrong request"})
@@ -170,7 +167,7 @@ def upload_image(request, category, post):
     file_obj = request.FILES['file']
     file_name_suffix = file_obj.name.split('.')[-1]
     if file_name_suffix not in ['jpg', 'png', 'gif', 'jpeg']:
-        return JsonResponse({"Error Message": f"Wrong file suffix ({file_name_suffix}), supported are .jpg, .png, .git, .pjeg"})
+        return JsonResponse({"Error Message": f"Wrong file suffix ({file_name_suffix}), supported are .jpg, .png, .git, .jpeg"})
 
     file_path = os.path.join(settings.MEDIA_ROOT, 'Category', matching_article.slug, file_obj.name)
 

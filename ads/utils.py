@@ -4,6 +4,7 @@ from ads.models import *
 
 menu = [
         {'title': "Добавить статью", 'url_name': 'post_create'},
+        {'title': "Страница пользователя", 'url_name': 'user_page'},
 ]
 
 
@@ -14,7 +15,7 @@ class DataMixin:
                 categories = Category.objects.annotate(Count('post'))
                 user_menu = menu.copy()
                 if not self.request.user.is_authenticated:
-                        user_menu.pop(0)
+                        user_menu.clear()
 
                 context['menu'] = user_menu
                 context['categories'] = categories

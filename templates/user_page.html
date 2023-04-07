@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% load custom_tags %}
+{% block content %}
+
+   <form action="" method="get">
+
+       {{ filterset.form.as_p }}
+
+       <input type="submit" value="Найти" />
+   </form>
+
+<ul class="list-articles">
+	{% for c in comments %}
+			<li><div class="article-panel">
+	<p class="first">От: {{c.user }}</p>
+	<p class="last">Дата: {{c.time_in|date:"d-m-Y H:i:s" }}</p>
+</div>
+
+	{% autoescape on %}
+	{{c.text|linebreaks|truncatewords:50}}
+	{% endautoescape %}
+			<div class="clear"></div>
+
+			</li>
+	{% endfor %}
+</ul>
+{% endblock %}

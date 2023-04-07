@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'ads.apps.AdsConfig',
     'tinymce',
     'django_apscheduler',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

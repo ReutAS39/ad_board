@@ -1,2 +1,4 @@
 django-tinymce
 six
+django_apscheduler
+django-filter

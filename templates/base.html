@@ -1,7 +1,5 @@
 {% load static %}
-
 {% load custom_tags %}
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -72,7 +70,7 @@
     <ul>
 {% if page_obj.has_previous %}
 <li class="page-num">
-	<a href="?page={{ page_obj.previous_page_number }}">&lt;</a>
+	<a href="?{% url_replace page=page_obj.previous_page_number %}">&lt;</a>
 </li>
 {% endif %}
 
@@ -81,14 +79,14 @@
         <li class="page-num page-num-selected">{{ p }}</li>
 		{% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2  %}
         <li class="page-num">
-            <a href="?page={{ p }}">{{ p }}</a>
+            <a href="?{% url_replace page=p %}">{{ p }}</a>
         </li>
 		{% endif %}
         {% endfor %}
 
 {% if page_obj.has_next %}
 <li class="page-num">
-	<a href="?page={{ page_obj.next_page_number }}">&gt;</a>
+	<a href="?{% url_replace page=page_obj.next_page_number %}">&gt;</a>
 </li>
 {% endif %}
 
@@ -103,7 +101,7 @@
 <!-- Footer -->
 <tr><td valign=top>
 	<div id="footer">
-		<p>&copy; 2021 Частичное или полное копирование информации с данного сайта для распространения на других ресурсах, в том числе и бумажных, строго запрещено.</p>
+		<p></p>
 	</div>
 </td></tr></table>
 <!-- Конец footer'а и страницы -->

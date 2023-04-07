@@ -19,7 +19,7 @@
 {% for c in post.comments_post.all %}
 
 <li>
-{{ c.time_in }}<br>
+{{ c.user }} {{ c.time_in }}<br>
     {{ c.text }}
 </li>
 
