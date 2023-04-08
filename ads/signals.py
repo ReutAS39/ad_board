@@ -9,25 +9,25 @@ from ad_board import settings
 from ads.models import Comment, Post
 
 
-@receiver(post_save, sender=Comment)
-def email_notify(sender, instance, created, **kwargs):
-    author_email = []
-    author_email.append(User.objects.get(id=instance.user_id).email)
-    post_article = Post.objects.get(id=instance.post_id).article
-
-
-    html_content = render_to_string(
-                    'email_notify.html',
-                    {
-                        'instance': instance,
-                        'comment_author': User.objects.get(id=instance.user_id).username,
-                        #'link': f'{settings.SITE_URL}/news/{instance.id}',
-                    })
-
-    send_mail(
-                subject=f'Новый комментарий к твоей статье "{post_article[:50]}"',
-                message=f'Здравствуй Новый комментарий {instance.text[:200]}',
-                from_email='CamcoHKappacko@yandex.ru',
-                recipient_list=author_email,
-                html_message=html_content
-            )
+# @receiver(post_save, sender=Comment)
+# def email_notify(sender, instance, created, **kwargs):
+#     author_email = []
+#     author_email.append(User.objects.get(id=instance.user_id).email)
+#     post_article = Post.objects.get(id=instance.post_id).article
+#
+#
+#     html_content = render_to_string(
+#                     'email_notify.html',
+#                     {
+#                         'instance': instance,
+#                         'comment_author': User.objects.get(id=instance.user_id).username,
+#                         #'link': f'{settings.SITE_URL}/news/{instance.id}',
+#                     })
+#
+#     send_mail(
+#                 subject=f'Новый комментарий к твоей статье "{post_article[:50]}"',
+#                 message=f'Здравствуй Новый комментарий {instance.text[:200]}',
+#                 from_email='CamcoHKappacko@yandex.ru',
+#                 recipient_list=author_email,
+#                 html_message=html_content
+#             )

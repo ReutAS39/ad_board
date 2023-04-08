@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
-from django.utils.text import slugify
+from pytils.translit import slugify
 from tinymce.models import HTMLField
+from .middleware import get_current_user
+from django.db.models import Q
 
 POSITION = (
     ('Tank', 'Tank'),
@@ -47,6 +49,10 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('post', kwargs={'post_slug': self.slug})
 
+class CommentStatusFilter(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(Q(status=False, user=get_current_user()) | Q(status=False,
+post__user=get_current_user()) | Q(status=True))
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments_post')
@@ -54,6 +60,7 @@ class Comment(models.Model):
     text = models.CharField(max_length=255)
     time_in = models.DateTimeField(auto_now_add=True)
     status = models.BooleanField(default=False)
+    objects = CommentStatusFilter()
 
     def __str__(self):
         return self.text

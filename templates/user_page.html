@@ -4,11 +4,15 @@
 {% block content %}
 
    <form action="" method="get">
+{% for f in filterset.form %}
+<p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
+<div class="form-error">{{ f.errors }}</div>
+{% endfor %}
 
-       {{ filterset.form.as_p }}
 
        <input type="submit" value="Найти" />
    </form>
+
 
 <ul class="list-articles">
 	{% for c in comments %}
@@ -19,6 +23,9 @@
 
 	{% autoescape on %}
 	{{c.text|linebreaks|truncatewords:50}}
+	Статус комментария: {{c.status }} -
+	<a data-url="{% url 'edit_comment_status' c.id 'public' %}"	href="#">Опубликовать</a>/
+	<a data-url="{% url 'edit_comment_status' c.id 'delete' %}"  href="#">Удалить</a>
 	{% endautoescape %}
 			<div class="clear"></div>
 

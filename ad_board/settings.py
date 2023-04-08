@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'tinymce',
     'django_apscheduler',
     'django_filters',
+    'pytils',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'ads.middleware.CurrentRequest',
 ]
 
 ROOT_URLCONF = 'ad_board.urls'

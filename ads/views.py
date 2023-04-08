@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect
 from django.urls import resolve, reverse_lazy
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
@@ -58,8 +58,7 @@ class UserPage(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        self.filterset = CommentFilter(self.request.GET, queryset)
-        # Возвращаем из функции отфильтрованный список товаров
+        self.filterset = CommentFilter(self.request.GET, kwarg_I_want_to_pass=self.request.user.id, queryset=queryset)
         return self.filterset.qs
 
     def get_context_data(self, **kwargs):
@@ -68,6 +67,12 @@ class UserPage(LoginRequiredMixin, ListView):
         context['title'] = 'Страница пользователя'
         context['filterset'] = self.filterset
         return context
+
+def edit_comment_status(request, pk, type):
+    c = Comment.objects.get(pk=pk)
+    if type == 'public':
+        c.status = True
+        c.save()
 
 
 class PostDetail(DataMixin, DetailView, FormMixin):
