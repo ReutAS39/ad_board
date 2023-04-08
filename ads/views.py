@@ -114,14 +114,6 @@ class PostCreate(LoginRequiredMixin, DataMixin, CreateView):
         c_def = self.get_user_context(title='Добавление статьи')
         return dict(list(context.items()) + list(c_def.items()))
 
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            messages.success(request, 'Статья добавлена.')
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.user = self.request.user

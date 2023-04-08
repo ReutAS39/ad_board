@@ -5,12 +5,12 @@ from django.forms import Textarea
 from ads.models import Post, Comment
 from tinymce.widgets import TinyMCE
 
+
 class PostForm(forms.ModelForm):
     article = forms.CharField(max_length=255, label='Заголовок:')
     post_text = forms.CharField(label='Текст', widget=TinyMCE(attrs={"cols": 80, "rows": 30}))
     #category = forms.ChoiceField(queryset=Category.objects.all())
     #print(category)
-
 
     class Meta:
         model = Post
