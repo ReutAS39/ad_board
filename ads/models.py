@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 from tinymce.models import HTMLField
 
 POSITION = (
@@ -30,7 +31,7 @@ class Category(models.Model):
 
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    slug = models.SlugField(max_length=255, unique=True, verbose_name="URL")
+    slug = models.SlugField(max_length=255, unique=True, blank=False, verbose_name="URL")
     created = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     article = models.CharField(max_length=255)
@@ -38,6 +39,10 @@ class Post(models.Model):
 
     def __str__(self):
         return self.article
+
+    def save(self,  *args, **kwargs):
+        self.slug = slugify(self.article)
+        return super(Post, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('post', kwargs={'post_slug': self.slug})

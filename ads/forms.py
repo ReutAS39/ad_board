@@ -18,7 +18,6 @@ class PostForm(forms.ModelForm):
            'category',
            'article',
            'post_text',
-           'slug',
         ]
 
     def clean_post_text(self):
