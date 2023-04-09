@@ -10,10 +10,11 @@ class CommentFilter(FilterSet):
 
         self.user = kwargs.pop('kwarg_I_want_to_pass', None)
         super(CommentFilter, self).__init__(*args, **kwargs)
-        self.queryset = Comment.objects.filter(user_id=self.user)
+        #self.queryset = Comment.objects.filter(user_id=self.user)
+        self.queryset = Comment.objects.filter(post_id__user_id=self.user)
         self.filters['post'].queryset = Post.objects.filter(user=self.user)
         self.filters['post'].label = "Обьявление"
-        self.filters['time_in'].label = "Дата"
+        self.filters['time_in'].label = "Комментарий создан после"
 
     class Meta:
         model = Comment

@@ -5,8 +5,8 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse, HttpResponse
-from django.shortcuts import redirect
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect, render
 from django.urls import resolve, reverse_lazy
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -54,6 +54,7 @@ class UserPage(LoginRequiredMixin, ListView):
     model = Comment
     template_name = 'user_page.html'
     context_object_name = 'comments'
+    ordering = '-time_in'
     paginate_by = 10
 
     def get_queryset(self):
@@ -68,11 +69,19 @@ class UserPage(LoginRequiredMixin, ListView):
         context['filterset'] = self.filterset
         return context
 
-def edit_comment_status(request, pk, type):
+
+def edit_comment_status(request, pk):
     c = Comment.objects.get(pk=pk)
-    if type == 'public':
-        c.status = True
-        c.save()
+    c.status = True
+    c.save()
+    messages.success(request, 'Комментарий опубликован.')
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+def delete_comment(request, pk):
+    c = Comment.objects.get(pk=pk)
+    c.delete()
+    messages.success(request, 'Комментарий удалён.')
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 
 class PostDetail(DataMixin, DetailView, FormMixin):

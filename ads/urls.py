@@ -13,5 +13,6 @@ urlpatterns = [
     path('category/<slug:category_slug>/', CategoryList.as_view(), name='category'),
     path('post/<slug:post_slug>/upload_image', views.upload_image, name='upload_image'),
     path('user_page/', UserPage.as_view(), name='user_page'),
-    path('user_page/edit_comment_status/<int:pk>/<slug:type>', views.edit_comment_status, name='edit_comment_status'),
+    path('user_page/delete_comment/<int:pk>', views.delete_comment, name='delete_comment'),
+    path('user_page/edit_comment_status/<int:pk>', views.edit_comment_status, name='edit_comment_status'),
 ]

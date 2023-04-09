@@ -61,6 +61,3 @@ class Comment(models.Model):
     time_in = models.DateTimeField(auto_now_add=True)
     status = models.BooleanField(default=False)
     objects = CommentStatusFilter()
-
-    def __str__(self):
-        return self.text

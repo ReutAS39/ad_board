@@ -12,7 +12,7 @@
 
        <input type="submit" value="Найти" />
    </form>
-
+<hr>
 
 <ul class="list-articles">
 	{% for c in comments %}
@@ -24,8 +24,10 @@
 	{% autoescape on %}
 	{{c.text|linebreaks|truncatewords:50}}
 	Статус комментария: {{c.status }} -
-	<a data-url="{% url 'edit_comment_status' c.id 'public' %}"	href="#">Опубликовать</a>/
-	<a data-url="{% url 'edit_comment_status' c.id 'delete' %}"  href="#">Удалить</a>
+				{% if  c.status != True %}
+	<a href="{% url 'edit_comment_status' c.id %}">Опубликовать</a>/
+				{% endif %}
+	<a href="{% url 'delete_comment' c.id %}">Удалить</a>
 	{% endautoescape %}
 			<div class="clear"></div>
 

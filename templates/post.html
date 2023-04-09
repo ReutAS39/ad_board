@@ -9,7 +9,7 @@
 <h4>{{ object.post_text|safe }}</h4>
 
 
-
+{% if request.user.is_authenticated %}
 <p>Комментарии: {{ post.comments_post.all.count }}</p>
 <hr>
 <p>Добавить комментарий</p>
@@ -22,8 +22,8 @@
     {{ c.text }}<br>
 {{ c.status }}
 </li>
-
 {% endfor %}
+
 </ul>
 
 <form action="#" method="post" enctype="multipart/form-data">
@@ -37,7 +37,7 @@
 
         <button type="submit">Добавить</button>
 </form>
-
+    {% endif %}
 
 
 {% endblock content %}
